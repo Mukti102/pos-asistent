@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -156,9 +157,10 @@ class TransactionController extends Controller
     }
 
     public function pos()
-    {
-        $products = Product::where('is_active', true)->where('stock', '>', 0)->get();
-        return view('pages.pos.index', compact('products'));
+    {   
+        $categories = Category::all();
+        $products = Product::with('category')->where('is_active', true)->where('stock', '>', 0)->get();
+        return view('pages.pos.index', compact('products','categories'));
     }
 
     /**

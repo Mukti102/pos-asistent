@@ -1,5 +1,5 @@
  <button id="chat-toggle"
-     class="fixed bottom-6 right-6 p-4 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 transition-all z-50 focus:outline-none">
+     class="fixed bottom-6 right-6 p-4 bg-primary text-white rounded-full shadow-2xl hover:bg-primary/40 transition-all z-50 focus:outline-none">
      <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
          stroke="currentColor">
          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -13,7 +13,7 @@
 
  <div id="chat-container"
      class="fixed bottom-24 right-6 w-[350px] md:w-[400px] h-[500px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl flex flex-col hidden overflow-hidden z-50 border border-gray-200 dark:border-gray-700 transition-all duration-300 transform translate-y-4">
-     <div class="p-4 bg-blue-600 text-white flex justify-between items-center">
+     <div class="p-4 bg-primary text-white flex justify-between items-center">
          <div class="flex items-center gap-3">
              <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold">AI</div>
              <div>
@@ -38,7 +38,7 @@
          <div class="relative flex items-center">
              <input type="text" id="message" placeholder="Tulis pertanyaan..."
                  class="w-full pl-4 pr-12 py-3 bg-gray-100 dark:bg-gray-700 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 dark:text-white outline-none">
-             <button class="absolute right-2 p-2 text-blue-600 hover:text-blue-700 transition">
+             <button class="absolute right-2 p-2 text-primary hover:text-primary/50 transition">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 rotate-90" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -109,23 +109,46 @@
          });
 
          // Helper Fungsi untuk append chat balon
-         function appendMessage(sender, text) {
-             const isBot = sender === 'bot';
-             const div = document.createElement('div');
-             div.className = `flex ${isBot ? 'justify-start' : 'justify-end'}`;
+        //  function appendMessage(sender, text) {
+        //      const isBot = sender === 'bot';
+        //      const div = document.createElement('div');
+        //      div.className = `flex ${isBot ? 'justify-start' : 'justify-end'}`;
 
-             div.innerHTML = `
-            <div class="max-w-[85%] p-3 text-sm shadow-sm ${
-                isBot 
-                ? 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700' 
-                : 'bg-blue-600 text-white rounded-2xl rounded-tr-none'
-            }">
-                ${text}
-            </div>
-        `;
+        //      div.innerHTML = `
+        //     <div class="max-w-[85%] p-3 text-sm shadow-sm ${
+        //         isBot 
+        //         ? 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700' 
+        //         : 'bg-blue-600 text-white rounded-2xl rounded-tr-none'
+        //     }">
+        //         ${text}
+        //     </div>
+        // `;
 
-             chatBox.appendChild(div);
-             chatBox.scrollTop = chatBox.scrollHeight; // Scroll otomatis ke bawah
-         }
+        //      chatBox.appendChild(div);
+        //      chatBox.scrollTop = chatBox.scrollHeight; // Scroll otomatis ke bawah
+        //  }
+
+        function appendMessage(sender, text) {
+    const isBot = sender === 'bot';
+    const div = document.createElement('div');
+    div.className = `flex ${isBot ? 'justify-start' : 'justify-end'}`;
+
+    // Regex untuk mengubah *teks* menjadi <strong>teks</strong>
+    // g = global (semua temuan), m = multiline
+    const formattedText = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+
+    div.innerHTML = `
+        <div class="max-w-[85%] p-3 text-sm shadow-sm ${
+            isBot 
+            ? 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700' 
+            : 'bg-blue-600 text-white rounded-2xl rounded-tr-none'
+        }">
+            ${formattedText}
+        </div>
+    `;
+
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
      });
  </script>

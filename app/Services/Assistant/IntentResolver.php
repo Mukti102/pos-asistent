@@ -49,7 +49,7 @@ class IntentResolver
         // =====================
         // RINGKASAN
         // =====================
-        if ($this->contains($msg, ['ringkasan', 'summary', 'performa', 'laporan singkat'])) {
+        if ($this->contains($msg, ['ringkasan', 'summary', 'performa', 'laporan singkat','report','laporan'])) {
             return ['intent' => 'summary_report'];
         }
 

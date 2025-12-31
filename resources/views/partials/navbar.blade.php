@@ -7,7 +7,7 @@
 
                 <div class="flex w-full items-center justify-between">
                     <h1 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                       {{ $header ?? 'Dashboard' }}
+                       @yield('title',\App\Models\Setting::get('site_name'))
                     </h1>
 
                     <div class="flex items-center gap-4">

@@ -1,35 +1,46 @@
 @extends('layouts.pos')
 @section('content')
-
-
-<div x-data="posSystem({{ $products->toJson() }})" class="flex flex-col h-[calc(100vh-100px)] overflow-hidden">
-    <a href="{{ route('dashboard') }}" class="mb-4 flex gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        <span class="text-gray-600 dark:text-gray-300 font-medium">Kembali ke Dashboard</span>
-    </a>
+    <div x-data="posSystem({{ $products->toJson() }})" class="flex flex-col h-[calc(100vh-100px)] overflow-hidden">
+        <a href="{{ route('dashboard') }}" class="mb-4 flex gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="text-gray-600 dark:text-gray-300 font-medium">Kembali ke Dashboard</span>
+        </a>
         <div class="flex flex-1 overflow-hidden gap-4">
 
             {{-- SISI KIRI: DAFTAR PRODUK --}}
             <div class="w-full md:w-2/3 flex flex-col h-full bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
-                {{-- Search Bar --}}
-                <div class="mb-4 relative">
-                    <input type="text" x-model="search" placeholder="Cari nama produk atau barcode..."
-                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <div class="flex flex-col md:flex-row gap-3 mb-4">
+                    {{-- Search Bar --}}
+                    <div class="relative flex-1">
+                        <input type="text" x-model="search" placeholder="Cari nama produk atau barcode..."
+                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    {{-- Filter Kategori --}}
+                    <div class="w-full md:w-48">
+                        <select x-model="selectedCategory"
+                            class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 shadow-sm">
+                            <option value="">Semua Kategori</option>
+                            <template x-for="cat in categories" :key="cat">
+                                <option :value="cat" x-text="cat"></option>
+                            </template>
+                        </select>
+                    </div>
                 </div>
 
                 {{-- Grid Produk --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-4 p-5">
                     <template x-for="product in filteredProducts" :key="product.id">
                         <div @click="addToCart(product)"
-                            class="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm cursor-pointer hover:shadow-md hover:ring-2 hover:ring-blue-500 transition-all group border border-gray-200 dark:border-gray-700">
+                            class="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm cursor-pointer hover:shadow-md hover:ring-2 hover:ring-primary transition-all group border border-gray-200 dark:border-gray-700">
                             <div
                                 class="h-24 w-full bg-gray-200 dark:bg-gray-700 rounded-lg mb-2 flex items-center justify-center text-gray-400">
                                 <template x-if="product.image" class="overflow-hidden rounded-sm">
@@ -45,11 +56,11 @@
                                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                     </svg>
                                 </template>
-                               
+
                             </div>
                             <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate"
                                 x-text="product.name"></h4>
-                            <p class="text-xs text-blue-600 dark:text-blue-400 font-bold mt-1"
+                            <p class="text-xs text-primary dark:text-primary font-bold mt-1"
                                 x-text="formatRupiah(product.selling_price)"></p>
                             <p class="text-[10px] text-gray-400 mt-1">Stok: <span x-text="product.stock"></span></p>
                         </div>
@@ -113,9 +124,10 @@
                     <div class="space-y-2 mb-4 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-500">Subtotal</span>
-                            <span class="font-bold text-gray-800 dark:text-white" x-text="formatRupiah(subTotal())"></span>
+                            <span class="font-bold text-gray-800 dark:text-white"
+                                x-text="formatRupiah(subTotal())"></span>
                         </div>
-                        <div class="flex items-center justify-between gap-4">
+                        {{-- <div class="flex items-center justify-between gap-4">
                             <span class="text-gray-500">Tax</span>
                             <input type="number" name="tax" x-model="tax"
                                 class="w-24 p-1 text-right text-xs rounded border border-gray-300 dark:bg-gray-800 dark:text-white">
@@ -124,11 +136,11 @@
                             <span class="text-gray-500">Discount</span>
                             <input type="number" name="discount" x-model="discount"
                                 class="w-24 p-1 text-right text-xs rounded border border-gray-300 dark:bg-gray-800 dark:text-white">
-                        </div>
-                        <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
+                        </div> --}}
+                        {{-- <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
                             <span class="text-gray-800 dark:text-white">Total</span>
                             <span class="text-blue-600 dark:text-blue-400" x-text="formatRupiah(grandTotal())"></span>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="mb-4">
@@ -147,10 +159,33 @@
                         </div>
                     </template>
 
-                    <button type="submit" :disabled="cart.length === 0"
-                        class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold rounded-xl shadow-lg transition">
-                        BAYAR SEKARANG
+                    {{-- Input Bayar & Kembalian --}}
+                    <div
+                        class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 space-y-3">
+                        <div class="flex items-center justify-between gap-4">
+                            <span class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase">Uang Bayar</span>
+                            <div class="relative">
+                                <span class="absolute left-2 top-1.5 text-xs text-gray-500">Rp</span>
+                                <input type="number" x-model="cashReceived" @input="calculateChange()"
+                                    class="w-32 p-1.5 pl-7 text-right text-sm font-bold rounded-lg border border-blue-300 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white outline-none">
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-blue-200 dark:border-blue-800">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Kembalian</span>
+                            <span class="text-lg font-black"
+                                :class="change < 0 ? 'text-red-500' : 'text-green-600 dark:text-green-400'"
+                                x-text="formatRupiah(change)"></span>
+                        </div>
+                    </div>
+
+                    {{-- Tombol Bayar dengan Validasi --}}
+                    <button type="submit" :disabled="cart.length === 0 || change < 0"
+                        class="w-full mt-4 py-3 bg-primary hover:bg-primary/70 disabled:bg-gray-400 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95">
+                        <span x-show="change >= 0">PROSES TRANSAKSI</span>
+                        <span x-show="change < 0">UANG TIDAK CUKUP</span>
                     </button>
+
+                  
                 </form>
             </div>
         </div>
@@ -160,19 +195,43 @@
         function posSystem(products) {
             return {
                 search: '',
+                selectedCategory: '',
                 products_db: products,
+                categories: [...new Set(products.map(p => p.category?.name).filter(Boolean))],
                 cart: [],
                 tax: 0,
                 discount: 0,
                 payment_status: 'paid',
 
+                // State Baru
+                cashReceived: 0,
+                change: 0,
+
                 get filteredProducts() {
-                    if (this.search === '') return this.products_db;
-                    return this.products_db.filter(p =>
-                        p.name.toLowerCase().includes(this.search.toLowerCase())
-                    );
+                    return this.products_db.filter(p => {
+                        const matchSearch = p.name.toLowerCase().includes(this.search.toLowerCase()) ||
+                            (p.barcode && p.barcode.includes(this.search));
+                        const matchCategory = this.selectedCategory === '' ||
+                            (p.category && p.category.name === this.selectedCategory);
+                        return matchSearch && matchCategory;
+                    });
                 },
 
+                // Fungsi baru untuk hitung kembalian
+                calculateChange() {
+                    this.change = this.cashReceived - this.grandTotal();
+                },
+
+                // Update grandTotal agar juga mentrigger kembalian saat pajak/diskon diubah
+                grandTotal() {
+                    const total = Math.max(0, (this.subTotal() + parseFloat(this.tax || 0)) - parseFloat(this.discount ||
+                        0));
+                    // Trigger hitung kembalian setiap kali total berubah
+                    this.change = this.cashReceived - total;
+                    return total;
+                },
+
+                // Pastikan saat tambah/hapus item, kembalian terupdate
                 addToCart(product) {
                     const existing = this.cart.find(i => i.id === product.id);
                     if (existing) {
@@ -189,8 +248,8 @@
                             quantity: 1
                         });
                     }
+                    this.calculateChange(); // Update kembalian
                 },
-
                 increaseQty(index) {
                     const productDB = this.products_db.find(p => p.id === this.cart[index].id);
                     if (this.cart[index].quantity < productDB.stock) {
@@ -228,5 +287,4 @@
             }
         }
     </script>
-
 @endsection
