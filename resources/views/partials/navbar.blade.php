@@ -31,10 +31,14 @@
                                  style="display: none;">
                                 <div class="px-2 py-1.5 text-sm font-semibold">My Account</div>
                                 <div class="h-px bg-gray-200 dark:bg-gray-800 my-1"></div>
-                                <a href="#" class="block rounded-sm px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Profile</a>
-                                <a href="#" class="block rounded-sm px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Settings</a>
+                                <a href="{{route('profile.edit')}}" class="block rounded-sm px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Profile</a>
+                                <a href="{{route('settings.index')}}" class="block rounded-sm px-2 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">Settings</a>
                                 <div class="h-px bg-gray-200 dark:bg-gray-800 my-1"></div>
-                                <a href="#" class="block rounded-sm px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/10">Log out</a>
+                                <form action="{{route('logout')}}" method="POST">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" class="block rounded-sm px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/10">Log out</button>
+                                </form>
                             </div>
                         </div>
                     </div>
